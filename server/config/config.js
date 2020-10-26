@@ -24,7 +24,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 let urlDB;
 
 if (process.env.NODE_ENV === 'dev') {
-    urlDB = 'mongodb://localhost:27017/mochila';    
+    urlDB = 'mongodb://localhost:27017/cafe';    
 } else {
     urlDB = process.env.MONGO_URI;
 }
@@ -34,4 +34,4 @@ process.env.URLDB = urlDB;
 /*
 * Google Client Id
 */
-process.env.CLIENT_ID = process.env.CLIENT_ID || 'poner cliente google de desarrollo';
+process.env.GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '162869836804-ii4vhfdk4ogg3adno59usiftnrn406ob.apps.googleusercontent.com';

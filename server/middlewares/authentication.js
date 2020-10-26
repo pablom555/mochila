@@ -2,7 +2,11 @@ const jwt = require('jsonwebtoken');
 
 const verifyToken = ( req, res, next ) => {
 
-    const token = req.get('token');
+    if (!req.headers.token) {
+        return res.status(403).json({ok: false, err: { message: 'La peticion no tiene la cabecera de autenticación' }});
+    } 
+        
+    const token = req.headers.token.replace(/['"]+/g, '');
 
     jwt.verify(token, process.env.SEED, (err, decoded) => {
         
