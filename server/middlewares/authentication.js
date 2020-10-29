@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
+const { createJSONResponse } = require('../helpers/index');
 
 const verifyToken = ( req, res, next ) => {
 
     if (!req.headers.token) {
-        return res.status(403).json({ok: false, err: { message: 'La peticion no tiene la cabecera de autenticación' }});
+        return res.status(403).json(createJSONResponse(false, { message: 'Token must be provided'}));
     } 
         
     const token = req.headers.token.replace(/['"]+/g, '');

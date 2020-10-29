@@ -1,4 +1,5 @@
 const { OAuth2Client } = require('google-auth-library');
+const Joi = require('joi');
 
 const createJSONResponse = (ok, message) => {
 
@@ -40,7 +41,39 @@ const verifyTokenGoogle = async (token, CLIENT_ID) => {
 
 }
 
+const validateDataNewUser = (userData) => {
+
+    // Object a retornar
+    let err = null;
+
+    // Schema de validacion
+    const schema = Joi.object({
+        name: Joi.string()
+            .min(3)
+            .max(50)
+            .required(),
+        email: Joi.string()
+            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'ar', 'net'] } })
+            .required(),
+        password: Joi.string()
+            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+            .required(),
+    });
+
+    // Valida datos a dar de alta como usuario
+    const { error, value } = schema.validate({ name: userData.name, email: userData.email, password: userData.password });
+
+    if (error) {
+        const messageError = { message: error.details[0].message, path: error.details[0].path };
+        err = { status: 500, message: messageError };
+    }
+
+    return err;
+
+}
+
 module.exports = {
     createJSONResponse,
-    verifyTokenGoogle
+    verifyTokenGoogle,
+    validateDataNewUser
 }

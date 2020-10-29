@@ -1,13 +1,9 @@
 'use strict';
 
-const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const { createJSONResponse, verifyTokenGoogle } = require('../helpers/index');
+const { createJSONResponse, verifyTokenGoogle, validateDataNewUser } = require('../helpers/index');
 const UserService = require('../services/userService');
-
-const app = express();
-
 
 const loginByEmail = async (req, res) => {
 
@@ -40,6 +36,13 @@ const loginByGoogle = async (req, res) => {
         // Sino encontró user en BBDD debe crearlo
         if (err.status === 404) {
 
+            // Valida datos del usuario a dar de alta
+            const err = validateDataNewUser({name:googleUser.name, email: googleUser.email, password: 'google'});
+
+            if (err) {
+                return res.status(err.status).json(createJSONResponse(false, err.message));
+            }
+
             const newUser = await UserService.createUser(googleUser, true, 'google');
 
             if (newUser.err) return res.status(newUser.err.status).json(createJSONResponse(false, newUser.err.message));
@@ -58,7 +61,6 @@ const loginByGoogle = async (req, res) => {
     return res.status(200).json(createJSONResponse(true, { userDB, token }));    
 
 }
-
 
 module.exports = {
     loginByEmail,
