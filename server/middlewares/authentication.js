@@ -12,12 +12,7 @@ const verifyToken = ( req, res, next ) => {
     jwt.verify(token, process.env.SEED, (err, decoded) => {
         
         if ( err ) {
-            return res.status(401).json({
-                ok:false,
-                err: {
-                    message: "Token must be provided"
-                }
-            });
+            return res.status(401).json(createJSONResponse(false, { message: 'Token must be provided' }));
         }
 
         req.user = decoded.user;
@@ -34,12 +29,8 @@ const verifyAdminRole = (req, res, next ) => {
 
     if ( role !== 'ADMIN_ROLE' ) {
 
-        return res.status(401).json({
-            ok: false,
-            err: {
-                message: "User dont have permission for this action"
-            }
-        });
+        return res.status(401).json(createJSONResponse(false, { message: 'User dont have permission for this action' }));
+       
     }
 
     next();
